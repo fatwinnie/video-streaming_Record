@@ -6,7 +6,6 @@ class RecordingThread (threading.Thread):
         threading.Thread.__init__(self)
         self.name = name
         self.isRunning = True
-
         self.cap = camera
         fourcc = cv2.VideoWriter_fourcc(*'MJPG')
         self.out = cv2.VideoWriter('./static/video.avi',fourcc, 20.0, (640,480))
@@ -14,8 +13,13 @@ class RecordingThread (threading.Thread):
     def run(self):
         while self.isRunning:
             ret, frame = self.cap.read()
+            gray = cv2.cvtColor(frame,cv2.COLOR_BGR2GRAY)
+            #再轉換一次灰階到彩色才會有三通到，儲存影片才能成功
+            color = cv2.cvtColor(gray,cv2.COLOR_GRAY2RGB)
             if ret:
-                self.out.write(frame)
+                self.out.write(color)
+                #self.out.write(frame)
+                
 
         self.out.release()
 
@@ -42,10 +46,12 @@ class VideoCamera(object):
     
     def get_frame(self):
         ret, frame = self.cap.read()
+        gray = cv2.cvtColor(frame,cv2.COLOR_RGB2GRAY)
 
         if ret:
-            ret, jpeg = cv2.imencode('.jpg', frame)
-            #gray=cv2.cvtColor(jpeg,cv2.COLOR_BGR2GRAY)
+            ret, jpeg = cv2.imencode('.jpg', gray)
+            
+            
 
             # Record video
             # if self.is_record:
@@ -76,3 +82,5 @@ class VideoCamera(object):
 
         if self.recordingThread != None:
             self.recordingThread.stop()
+
+            
