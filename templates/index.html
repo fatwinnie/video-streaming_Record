@@ -2,9 +2,52 @@
 <html>
 <head>
   <title>Streaming Video Recorder</title>
+  <style>
+    div{margin:5px;border:0;padding:0;}
+    table,th,td{
+      border:1px solid black;
+      border-collapse: collapse;
+    }
+   
+    table{
+      background-color:lightblue;
+      width: 100%;
+    }
+
+    #user_ROI{
+  width:50%;
+  background: lightgray;
+  padding:10px; 
+   }
+
+    td > input {
+  width:100%;
+  box-sizing:border-box; /* 使元素的寬度包括padding margin, border*/
+  -moz-box-sizing:border-box;
+   }
+
+  </style>
 </head>
 <body>
   <h1>Streaming Video Recorder</h1>
+  <div id=user_ROI>
+    <h3>輸入欲選取的錄影範圍(ROI range)</h3>
+    <table>
+      <tr>
+        <td>起始點X:</td>
+        <td width="10%"><input type="text" size="100"></td>
+        <td>起始點Y:</td>
+        <td width="10%"><input type="text" size="100"></td>
+        <td>寬度(640以內):</td>
+        <td width="10%"><input type="text" size="100"></td>
+        <td>高度(480以內):</td>
+        <td width="10%"><input type="text" size="100"></td>
+        
+
+      </tr>
+    </table>
+
+  </div>
   <div id="recorder">
     <button id="record">Record</button>
     <button id="stop">Stop</button>
@@ -12,5 +55,6 @@
     <script type="text/javascript" src="{{ url_for('static', filename='recorder.js') }}"></script>      
   </div>
   <img id="video" src="{{ url_for('video_viewer') }}">
+  
 </body>
 </html>
