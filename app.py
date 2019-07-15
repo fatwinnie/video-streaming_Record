@@ -18,9 +18,12 @@ def record_status():
     json = request.get_json()
 
     status = json['status']
-
+    x = json['x']
+    y = json['y']
+    w = json['w']
+    h = json['h']
     if status == "true":
-        video_camera.start_record()
+        video_camera.start_record(x,y,w,h)
         return jsonify(result="started")
     else:
         video_camera.stop_record()
