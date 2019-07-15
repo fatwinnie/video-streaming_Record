@@ -6,13 +6,18 @@ from timeit import default_timer as timer
 
 
 class RecordingThread (threading.Thread):
-    def __init__(self, name, camera):
+    def __init__(self,name,camera,x,y,w,h):
         threading.Thread.__init__(self)
         self.name = name
         self.isRunning = True
         self.cap = camera
+        self.x = x
+        self.y = y
+        self.w = w
+        self.h = h
         fourcc = cv2.VideoWriter_fourcc(*'MJPG')
-        size = (500,300)  #寬500,高300(width,height)
+        size = (int(self.w),int(self.h)) 
+        #size=(500,300) #寬500,高300(width,height)
         self.out = cv2.VideoWriter('./static/video.avi',fourcc,15,size)
         #self.out = cv2.VideoWriter('./static/video.avi',fourcc, 20.0, (640,480))
 
@@ -20,9 +25,9 @@ class RecordingThread (threading.Thread):
         frmae_counter = 0
         while self.isRunning:
             ret, frame = self.cap.read()
-            flipframe = cv2.flip(frame,0) #垂直翻轉
-            #gray = cv2.cvtColor(frame,cv2.COLOR_BGR2GRAY)
-            roi = flipframe[0:300, 0:500] #寬500,高300
+            #flipframe = cv2.flip(frame,0) #垂直翻轉
+            #roi=frame[0:300,0:500]
+            roi = frame[int(self.y):int(self.y)+int(self.h),int(self.x):int(self.x)+int(self.w)] #寬500,高300
             gray = cv2.cvtColor(roi,cv2.COLOR_BGR2GRAY)               
             color = cv2.cvtColor(gray,cv2.COLOR_GRAY2RGB)  #再轉換一次灰階到彩色才會有三通到，儲存影片才能成功
             target = Image.fromarray(cv2.cvtColor(color, cv2.COLOR_BGR2RGB))
@@ -62,21 +67,21 @@ class VideoCamera(object):
     
     def get_frame(self):
         ret, frame = self.cap.read()
-        flipped = cv2.flip(frame,0) #垂直翻轉
+        #flipped = cv2.flip(frame,0) #垂直翻轉
         #gray = cv2.cvtColor(frame,cv2.COLOR_RGB2GRAY)
         #ROI= gray[0:int(300), 0:int(500)] #寬500,高300
 
         if ret:
             #ret, jpeg = cv2.imencode('.jpg', ROI)
-            ret, jpeg = cv2.imencode('.jpg', flipped)
+            ret, jpeg = cv2.imencode('.jpg', frame)
             return jpeg.tobytes()
       
         else:
             return None
 
-    def start_record(self):
+    def start_record(self, x, y, w, h):
         self.is_record = True
-        self.recordingThread = RecordingThread("Video Recording Thread", self.cap)
+        self.recordingThread = RecordingThread("Video Recording Thread", self.cap, x, y, w, h)
         self.recordingThread.start()
 
     def stop_record(self):
