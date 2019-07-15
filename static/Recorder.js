@@ -1,6 +1,7 @@
 var buttonRecord = document.getElementById("record");
 var buttonStop = document.getElementById("stop");
 
+
 buttonStop.disabled = true;
 
 buttonRecord.onclick = function() {
@@ -20,9 +21,24 @@ buttonRecord.onclick = function() {
             // alert(xhr.responseText);
         }
     }
+
+    // get user input select ROI id
+    var X = document.getElementById("start_X").value;
+    var Y = document.getElementById("start_Y").value;
+    var h = document.getElementById("height").value;
+    var w = document.getElementById("width").value;
+    var roi={
+        status:'true',
+        x:X,
+        y:Y,
+        w:w,
+        h:h,
+    };
+    
     xhr.open("POST", "/record_status");
     xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
-    xhr.send(JSON.stringify({ status: "true" }));
+    xhr.send(JSON.stringify(roi));
+    
 };
 
 buttonStop.onclick = function() {
@@ -41,8 +57,22 @@ buttonStop.onclick = function() {
             downloadLink.href = "/static/video.avi";
         }
     }
+
+    var X = document.getElementById("start_X").value;
+    var Y = document.getElementById("start_Y").value;
+    var h = document.getElementById("height").value;
+    var w = document.getElementById("width").value;
+    var roi={
+        status:'false',
+        x:X,
+        y:Y,
+        w:w,
+        h:h,
+    };
+    console.log(roi);
     xhr.open("POST", "/record_status");
     xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
-    xhr.send(JSON.stringify({ status: "false" }));
+    xhr.send(JSON.stringify(roi));
 };
+
 
